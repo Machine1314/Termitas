@@ -46,7 +46,6 @@ class Termite:
                 self.color = "green"
                 self.load = posChips[self.posicion]
                 Chips[self.load].color = "white"
-                self.last_postion = self.posicion
                 return self.posicion
             else:
                 print('No coge la chip que recién dejo')
