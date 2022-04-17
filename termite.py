@@ -25,7 +25,6 @@ class Termite:
         self.posicion = (self.posicion[0] - interval, self.posicion[1])
 
     def move(self, r, limits, interval=1):
-        self.last_postion = self.posicion
         mov = r.randint(0, 3)
         if mov == 0:
             if self.posicion[1] < limits[1]:
@@ -40,21 +39,27 @@ class Termite:
             if self.posicion[0] < limits[3]:
                 self.moveRight(interval)
 
-    def checkChip(self, Chips, posChips, rand, limits, interval):
+    def checkChip(self, Chips, posChips, rand, limits, interval, termite, tc):
         if self.posicion in posChips and self.color == "red":
-            if Chips[posChips[self.posicion]].color != "green":
+            if Chips[posChips[self.posicion]].color != "white" and self.posicion != self.last_postion:
                 print('Toma una chip>> ', Chips[posChips[self.posicion]].color)
                 self.color = "green"
                 self.load = posChips[self.posicion]
-                Chips[self.load].color = "green"
+                Chips[self.load].color = "white"
+                self.last_postion = self.posicion
                 return self.posicion
+            else:
+                print('No coge la chip que recién dejo')
         elif self.posicion in posChips and self.color == "green":
             if Chips[posChips[self.posicion]].color == "blue":
-                print('Se mueve porque esta sin tomar')
+                print('Choca con chip sin tomar ')
                 self.move(rand, limits, interval)
+                print('*Se mueve*')
+                tc.color(termite.getColor())
+                tc.goto(termite.getPos())
                 if self.posicion in posChips:
                     print('Se mueve a una chip')
-                    if Chips[posChips[self.posicion]].color == "green":
+                    if Chips[posChips[self.posicion]].color == "white":
                         print('Se mueve a una chip libre')
                         print('Deja una chip>> ', Chips[posChips[self.posicion]].index)
                         self.color = "red"
@@ -63,33 +68,20 @@ class Termite:
                         print("Pos chips despues: ", Chips[self.load].posicion)
                         Chips[self.load].color = "blue"
                         self.load = None
-                        # print(self.load)
+                        self.last_postion = self.posicion
                         return self.posicion
                 else:
-                    print('Deja una chip en una posicion sin ocupar>> ')
+                    print('Deja una chip en un espacio en blanco ')
                     self.color = "red"
                     print("Pos chips antes: ", Chips[self.load].posicion)
+                    # print(posChips)
                     posChips[self.getPos()] = posChips.pop(Chips[self.load].posicion)
                     Chips[self.load].posicion = self.posicion
                     print("Pos chips despues: ", Chips[self.load].posicion)
                     Chips[self.load].color = "blue"
                     self.load = None
-                    # print(self.load)
+                    self.last_postion = self.posicion
                     return self.posicion
-
-
-    def dropChip(self, Chips, posChips):
-        if self.posicion in posChips and self.color == "green":
-            if Chips[posChips[self.posicion]].color != "green":
-                self.color = "red"
-                print("Pos chips antes: ", Chips[self.load].posicion)
-                Chips[self.load].posicion = self.posicion
-                print("Pos chips despues: ", Chips[self.load].posicion)
-                Chips[self.load].color = "blue"
-                self.load = None
-                Chips[self.load].color = "green"
-                return self.posicion
-
 
 
 class Chip:

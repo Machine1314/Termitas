@@ -47,15 +47,13 @@ def walk(steps, interval, termites, chips, maxLimit):
     #    tc.goto(termList[i].getPos())
 
     for ts in range(steps):
-        print('\r' + str(ts), end='')
-
         # print(len(chipList), len(posChips))
         # print(posChips)
         for i, tc in enumerate(tlist):
             # postions of all chips in the canvas
             posChips = {c.getPos(): c.index for c in chipList}
 
-            posT = termList[i].checkChip(chipList, posChips, r, limits, interval)
+            posT = termList[i].checkChip(chipList, posChips, r, limits, interval, termList[i], tc)
 
             # Change color of chip if pickChip NOT returns None
             if posT is not None:
@@ -70,7 +68,7 @@ def walk(steps, interval, termites, chips, maxLimit):
             tc.color(termList[i].getColor())
             tc.goto(termList[i].getPos())
 
-        sleep(0.6)
+        #sleep(0.7)
         # screen.update()
         screen.tracer(100)  # Se refrescara la pantalla cada 10 ejecuciones
 
